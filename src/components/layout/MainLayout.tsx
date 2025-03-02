@@ -19,37 +19,45 @@ const MainLayout = ({ children }: MainLayoutProps) => {
   };
 
   return (
-    <div
-      className={`flex h-screen bg-background ${isRtl ? "flex-row-reverse" : "flex-row"}`}
-    >
+    <div className="flex h-screen bg-background" dir={isRtl ? "rtl" : "ltr"}>
       <AnimatePresence initial={false}>
         <motion.div
           key="sidebar"
           initial={{ width: sidebarExpanded ? 280 : 80 }}
           animate={{ width: sidebarExpanded ? 280 : 80 }}
           transition={{ duration: 0.3, ease: "easeInOut" }}
-          className="relative z-20 h-full"
+          className="fixed top-0 z-20 h-full"
+          style={{
+            [isRtl ? "right" : "left"]: 0, // Explicitly position sidebar
+          }}
         >
           <Sidebar expanded={sidebarExpanded} isRtl={isRtl} />
         </motion.div>
       </AnimatePresence>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <motion.div
+        className="flex-1 flex flex-col overflow-hidden"
+        animate={{
+          marginLeft: isRtl ? 0 : sidebarExpanded ? 280 : 80,
+          marginRight: isRtl ? (sidebarExpanded ? 280 : 80) : 0,
+        }}
+        transition={{ duration: 0.3, ease: "easeInOut" }}
+      >
         <Header
           toggleSidebar={toggleSidebar}
           sidebarExpanded={sidebarExpanded}
         />
-        <main className="flex-1 overflow-auto bg-muted/20 p-0">
+        <main className="flex-1 overflow-auto bg-[#0f172a] p-0">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3 }}
-            className="container mx-auto py-6 px-4 md:px-6"
+            className="container mx-auto py-4 px-0"
           >
             {children || <Outlet />}
           </motion.div>
         </main>
-      </div>
+      </motion.div>
     </div>
   );
 };

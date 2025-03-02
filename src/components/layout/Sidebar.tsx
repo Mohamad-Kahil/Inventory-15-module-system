@@ -60,7 +60,7 @@ const NavItem = ({
   const hasSubItems = subItems && subItems.length > 0;
 
   return (
-    <div className="mb-1">
+    <div className="mb-0.25">
       <NavLink
         to={hasSubItems ? "#" : path}
         onClick={(e) => {
@@ -71,10 +71,10 @@ const NavItem = ({
         }}
         className={({ isActive }) =>
           cn(
-            "flex items-center px-3 py-2 rounded-md text-sm transition-colors",
-            "hover:bg-accent hover:text-accent-foreground",
+            "flex items-center px-3 py-0.5 rounded-md text-sm transition-colors",
+            "hover:bg-[#10b981]/20 hover:text-[#10b981]",
             isActive && !hasSubItems
-              ? "bg-primary/10 text-primary font-medium"
+              ? "bg-[#10b981]/10 text-[#10b981] font-medium"
               : "text-muted-foreground",
             isRtl ? "flex-row-reverse text-right" : "text-left",
           )
@@ -84,6 +84,7 @@ const NavItem = ({
           className={cn(
             "flex items-center",
             expanded ? "w-full" : "justify-center",
+            isRtl && expanded ? "flex-row-reverse" : "",
           )}
         >
           <span
@@ -102,7 +103,7 @@ const NavItem = ({
             </motion.span>
           )}
           {expanded && badge && (
-            <Badge variant="outline" className="ml-auto">
+            <Badge variant="outline" className={isRtl ? "mr-auto" : "ml-auto"}>
               {badge}
             </Badge>
           )}
@@ -126,10 +127,10 @@ const NavItem = ({
               to={item.path}
               className={({ isActive }) =>
                 cn(
-                  "flex items-center px-3 py-2 rounded-md text-xs transition-colors",
-                  "hover:bg-accent hover:text-accent-foreground",
+                  "flex items-center px-3 py-0.5 rounded-md text-xs transition-colors",
+                  "hover:bg-[#10b981]/20 hover:text-[#10b981]",
                   isActive
-                    ? "bg-primary/5 text-primary font-medium"
+                    ? "bg-[#10b981]/5 text-[#10b981] font-medium"
                     : "text-muted-foreground",
                   isRtl ? "flex-row-reverse text-right" : "text-left",
                 )
@@ -238,13 +239,16 @@ const Sidebar = ({ expanded, isRtl = false }: SidebarProps) => {
   return (
     <div
       className={cn(
-        "h-full border-r border-border bg-card flex flex-col",
+        "h-full border-r border-border bg-[#0f172a] text-white flex flex-col",
         expanded ? "w-[280px]" : "w-[80px]",
+        isRtl ? "right-0 border-l" : "left-0 border-r",
       )}
+      dir={isRtl ? "rtl" : "ltr"}
+      style={{ position: "fixed" }}
     >
       <div
         className={cn(
-          "flex h-16 items-center border-b border-border px-4",
+          "flex h-16 items-center border-b border-[#1e293b] px-4",
           expanded
             ? isRtl
               ? "justify-end"
@@ -257,21 +261,26 @@ const Sidebar = ({ expanded, isRtl = false }: SidebarProps) => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="flex items-center"
+            className={cn("flex items-center", isRtl && "flex-row-reverse")}
           >
-            <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold mr-2">
+            <div
+              className={cn(
+                "h-8 w-8 rounded-md bg-[#10b981] flex items-center justify-center text-white font-bold",
+                isRtl ? "ml-2" : "mr-2",
+              )}
+            >
               IN
             </div>
             <h1 className="text-xl font-bold">{t("app.title")}</h1>
           </motion.div>
         ) : (
-          <div className="h-8 w-8 rounded-md bg-primary flex items-center justify-center text-primary-foreground font-bold">
+          <div className="h-8 w-8 rounded-md bg-[#10b981] flex items-center justify-center text-white font-bold">
             IN
           </div>
         )}
       </div>
 
-      <ScrollArea className="flex-1 py-4">
+      <ScrollArea className="flex-1 py-1 max-h-[calc(100vh-8rem)]">
         <nav className="grid gap-1 px-2">
           {navItems.map((item, index) => (
             <NavItem
@@ -288,7 +297,7 @@ const Sidebar = ({ expanded, isRtl = false }: SidebarProps) => {
         </nav>
       </ScrollArea>
 
-      <div className="mt-auto p-4 border-t border-border">
+      <div className="mt-auto p-4 border-t border-[#1e293b]">
         {expanded ? (
           <motion.div
             initial={{ opacity: 0 }}
